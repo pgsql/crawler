@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110715190655) do
+ActiveRecord::Schema.define(:version => 20110716114722) do
 
   create_table "configurations", :force => true do |t|
     t.text     "company_name"
@@ -35,10 +35,10 @@ ActiveRecord::Schema.define(:version => 20110715190655) do
     t.text     "worker"
     t.boolean  "create_csv"
     t.boolean  "job_name"
-    t.boolean  "working_time"
+    t.boolean  "working_title"
     t.boolean  "location"
     t.boolean  "organization_name"
-    t.boolean  "department_creation"
+    t.boolean  "department_description"
     t.boolean  "brieff_description"
     t.boolean  "detailed_description"
     t.boolean  "job_requirments"
@@ -50,6 +50,7 @@ ActiveRecord::Schema.define(:version => 20110715190655) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "end_time"
+    t.boolean  "search_page"
   end
 
   create_table "csv_fields", :force => true do |t|
@@ -73,7 +74,7 @@ ActiveRecord::Schema.define(:version => 20110715190655) do
     t.integer  "configuration_id"
     t.date     "date_created"
     t.date     "date_modified"
-    t.boolean  "expired",            :default => false
+    t.boolean  "expired",              :default => false
     t.text     "job_name"
     t.text     "working_title"
     t.text     "location"
@@ -86,6 +87,7 @@ ActiveRecord::Schema.define(:version => 20110715190655) do
     t.binary   "html_blob"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "detailed_description"
   end
 
 end
