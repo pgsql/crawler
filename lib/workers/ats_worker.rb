@@ -25,10 +25,12 @@ class ATSWorker < CSVMaker
     data = "<html>\n<body>\n<a href=\"#{link}\">#{file_name}</a>\n"+data+"\n</body>\n</html>"
     log "saving page to DB: "+File.expand_path(path)+"\n--------------\n"
     result.update_attributes(:html_blob => data) if @configuration.save_html_blob
-    File.makedirs(dirs)
-    f = File.new path, "w"
-    cnt = f.write data
-    f.close
+    if @configuration.save_html_file
+      File.makedirs(dirs)
+      f = File.new path, "w"
+      cnt = f.write data
+      f.close
+    end
   end
   #"next" link has different format of "onclick" attribute
   #this method converts it to format acceptable by method 'decorate_form'
