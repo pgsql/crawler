@@ -67,8 +67,8 @@ class ATSWorker < CSVMaker
     @configuration = Configuration.find(config_id)
     @time_of_last_run  =  Time.now
   end
-
-  def update_result(config,result,location,organization_name,brief_description,job_requirements,additional_details,how_to_apply,link)
+  #TODO: Refactor the below method using the csv_row instead of passing  all the variables
+  def update_result(config,result,location,organization_name,brief_description,job_requirements,additional_details,how_to_apply,link,department_description,detailed_description)
     result.location = location if config.location
     result.expired = false
     result.organination_name = organization_name if config.organization_name

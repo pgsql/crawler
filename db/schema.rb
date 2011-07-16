@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110716114722) do
+ActiveRecord::Schema.define(:version => 20110716132809) do
 
   create_table "configurations", :force => true do |t|
     t.text     "company_name"
@@ -78,7 +78,7 @@ ActiveRecord::Schema.define(:version => 20110716114722) do
     t.text     "job_name"
     t.text     "working_title"
     t.text     "location"
-    t.text     "organination_name"
+    t.text     "organization_name"
     t.text     "brieff_description"
     t.text     "job_requirments"
     t.text     "additional_details"

@@ -55,10 +55,10 @@ class BTNSearch < ATSWorker
         csv_row.add "How To Apply", how_to_apply
         csv_row.add "Link", link.to_s
         @rows.push csv_row
-
         
         @result = Result.find_or_create_by_job_name_and_working_title(job_name,working_title)
-        update_result(@configuration, @result, location,organization_name,brief_description,job_requirements,additional_details,how_to_apply,link)
+        #TODO: Refractor the below method using the csv_row instead of passing  all the variables
+        update_result(@configuration, @result, location,organization_name,brief_description,job_requirements,additional_details,how_to_apply,link,department_description,detailed_description )
 
 
         parsed_count +=1
