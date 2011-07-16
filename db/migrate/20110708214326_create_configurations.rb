@@ -11,7 +11,7 @@ class CreateConfigurations < ActiveRecord::Migration
       t.date :last_run
       t.time :time_of_last_run
       t.integer :no_of_times_run
-      t.boolean :first_time
+      t.boolean :first_time, :default => 0
       t.boolean :has_next
       t.text :job_listing_option
       t.boolean :active

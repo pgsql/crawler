@@ -4,9 +4,9 @@
       <h2><%= pluralize(@result.errors.count, "error") %> prohibited this result from being saved:</h2>
 
       <ul>
-      <% @result.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
+        <% @result.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
       </ul>
     </div>
   <% end %>
@@ -49,6 +49,11 @@
   <div class="field">
     <%= f.label :detailed_description %><br />
     <%= f.text_area :detailed_description %>
+  </div>
+
+  <div class="field">
+    <%= f.label :department_description %><br />
+    <%= f.text_area :department_description %>
   </div>
   <div class="field">
     <%= f.label :job_requirments %><br />

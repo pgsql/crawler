@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110716132809) do
+ActiveRecord::Schema.define(:version => 20110716144444) do
 
   create_table "configurations", :force => true do |t|
     t.text     "company_name"
@@ -74,7 +74,7 @@ ActiveRecord::Schema.define(:version => 20110716132809) do
     t.integer  "configuration_id"
     t.date     "date_created"
     t.date     "date_modified"
-    t.boolean  "expired",              :default => false
+    t.boolean  "expired",                :default => false
     t.text     "job_name"
     t.text     "working_title"
     t.text     "location"
@@ -88,6 +88,13 @@ ActiveRecord::Schema.define(:version => 20110716132809) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "detailed_description"
+    t.text     "department_description"
+  end
+
+  create_table "samples", :force => true do |t|
+    t.string   "title",      :default => "0"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end

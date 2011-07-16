@@ -66,16 +66,19 @@ class ATSWorker < CSVMaker
   def update_last_run(config_id)
     @configuration = Configuration.find(config_id)
     @time_of_last_run  =  Time.now
+    @configuration.time_of_last_run = @time_of_last_run
   end
-  #TODO: Refactor the below method using the csv_row instead of passing  all the variables
+  #TODO: Refractor the below method using the csv_row instead of passing  all the variables
   def update_result(config,result,location,organization_name,brief_description,job_requirements,additional_details,how_to_apply,link,department_description,detailed_description)
     result.location = location if config.location
     result.expired = false
-    result.organination_name = organization_name if config.organization_name
+    result.organization_name = organization_name if config.organization_name
     result.brieff_description = brief_description if config.brieff_description
     result.job_requirments = job_requirements if config.job_requirments
     result.additional_details = additional_details if config.additional_details
     result.how_to_apply = how_to_apply if config.how_to_apply
+    result.detailed_description = detailed_description if config.detailed_description
+    result.department_description = department_description if config.department_description
     result.link = link.to_s if config.link
     result.configuration_id = config.id
     result.save
@@ -84,8 +87,8 @@ class ATSWorker < CSVMaker
   def update_configuration(config)
     config.time_of_last_run = @time_of_last_run
     config.no_of_times_run = config.no_of_times_run.to_i + 1
-    config.time_of_last_run = Time.now - config.time_of_last_run
     config.end_time = Time.now
+    config.last_run = config.end_time - config.time_of_last_run
     if config.first_time.blank?
       config.first_time =  1
     else

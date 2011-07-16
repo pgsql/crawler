@@ -1,4 +1,6 @@
 Crawler::Application.routes.draw do
+  resources :samples
+
   resources :results
 
   resources :configurations
