@@ -3,7 +3,7 @@
 <table>
   <tr>
     <th>Configuration</th>
-   
+    <th>Job Name</th>
     <th>Working title</th>
     <th>Location</th>
     <th>Organination name</th>
@@ -14,7 +14,6 @@
     <th>Link</th>
     <th>Html blob</th>
     <th>Expired</th>
-
     <th></th>
     <th></th>
     <th></th>
@@ -23,7 +22,6 @@
 <% @results.each do |result| %>
   <tr>
     <td><%= result.configuration.title %></td>
-    <td><%= result.expired %></td>
     <td><%= result.job_name %></td>
     <td><%= result.working_title %></td>
     <td><%= result.location %></td>
@@ -33,7 +31,7 @@
     <td><%= result.additional_details %></td>
     <td><%= result.how_to_apply %></td>
     <td><%= result.link %></td>
-    <td><%#= result.html_blob %></td>
+    <td>Html blob<%#= result.html_blob %></td>
     <td><%= result.expired %></td>
     <td><%= link_to 'Show', result %></td>
     <td><%= link_to 'Edit', edit_result_path(result) %></td>

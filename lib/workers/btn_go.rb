@@ -5,7 +5,8 @@ class BTNGo < ATSWorker
   def parse(page)
     #put a header to terminal window -- you can skip this
     super
-
+    update_last_run(@job[:id])
+    @configuration.results.update_all("expired = true")
     #search form
     form = page.forms[0]
 
@@ -33,6 +34,9 @@ class BTNGo < ATSWorker
 
     #count of parsed/saved job-postings
     parsed_count=0
+    
+
+
     while true do #this will break on complex condition(s) below
       log "Page: #{pagenum}"
       link_form = results.forms[0].clone #clone is needed because of way Mechanize/Nokogiry handles forms
@@ -63,6 +67,20 @@ class BTNGo < ATSWorker
         datapage = link_form.submit
 
         #Parse the page and put data to CSV row
+        
+        @fields = [
+         "Job Name",
+         "Working Title",
+         "Location",
+         "Organization Name",
+         "Department Description",
+         "Brief Description",
+         "Detailed Description",
+         "Job Requirements",
+         "Additional Details",
+         "How To Apply",
+         "Link"
+     ]
         csv_row = CSVRow.new(@fields)
 
         #each variable below corresponds to CSV field
@@ -92,6 +110,11 @@ class BTNGo < ATSWorker
         csv_row.add "How To Apply", how_to_apply
         csv_row.add "Link", link.to_s
 
+        
+        @result = Result.find_or_create_by_job_name_and_working_title(job_name,working_title)
+        update_result(@configuration, @result, location,organization_name,brief_description,job_requirements,additional_details,how_to_apply,link)
+
+
         #and this row to rows array
         @rows.push csv_row
         parsed_count +=1
@@ -106,8 +129,11 @@ class BTNGo < ATSWorker
 
       #convert all scraped CSV rows to plain CSV text
       @data = to_csv
-      save_data
+      save_data if @configuration.create_csv
+      
       log "saved #{parsed_count} items in total"
+
+      
 
       #open next page
 
@@ -130,9 +156,11 @@ class BTNGo < ATSWorker
       pagenum +=1
       # break if pagenum > 5 #this is for debug -- disregard
     end
-
+    update_configuration(@configuration)
     log "Done!"
-    return to_csv
+    return ""#,to_csv
+    
+
   end
 
 end

@@ -4,9 +4,8 @@
 class BTNSearch < ATSWorker
   def parse(page)
     super
-    @configuration = Configuration.find(@job[:id])
-    @time_of_last_run  =  Time.now
-    
+    update_last_run(@job[:id])
+    @configuration.results.update_all("expired = true")
     form = page.forms[0]
     options = page.parser.xpath '//*[@id="Search"]'
     decorate_form form, options
@@ -44,31 +43,23 @@ class BTNSearch < ATSWorker
         how_to_apply = html2csv datapage.parser.xpath('/html/body/form/span[2]/div/div[3]/span/table//tr[4]/td/table//tr/td/table//tr/td[2]/table//tr[29]/td[3]').inner_html
         link = datapage.uri
 
-#        csv_row.add "Job Name", job_name
-#        csv_row.add "Working Title", working_title
-#        csv_row.add "Location", location
-#        csv_row.add "Organization Name", organization_name
-#        csv_row.add "Department Description", department_description
-#        csv_row.add "Brief Description", brief_description
-#        csv_row.add "Detailed Description", detailed_description
-#        csv_row.add "Job Requirements", job_requirements
-#        csv_row.add "Additional Details", additional_details
-#        csv_row.add "How To Apply", how_to_apply
-#        csv_row.add "Link", link.to_s
-#        "Department Description", department_description,
-#        "Detailed Description", detailed_description,
+        csv_row.add "Job Name", job_name
+        csv_row.add "Working Title", working_title
+        csv_row.add "Location", location
+        csv_row.add "Organization Name", organization_name
+        csv_row.add "Department Description", department_description
+        csv_row.add "Brief Description", brief_description
+        csv_row.add "Detailed Description", detailed_description
+        csv_row.add "Job Requirements", job_requirements
+        csv_row.add "Additional Details", additional_details
+        csv_row.add "How To Apply", how_to_apply
+        csv_row.add "Link", link.to_s
+        @rows.push csv_row
+
         @configuration.results.update_all("expired = true")
         @result = Result.find_or_create_by_job_name_and_working_title(job_name,working_title)
-        @result.location = location if @configuration.location
-        @result.expired = false
-        @result.organization_name = organization_name if @configuration.organization_name
-        @result.brieff_description = brief_description if @configuration.brieff_description
-        @result.job_requirments = job_requirements if @configuration.job_requirments
-        @result.additional_details = additional_details if @configuration.additional_details
-        @result.how_to_apply = how_to_apply if @configuration.how_to_apply
-        @result.link = link.to_s if @configuration.link
-        @result.configuration_id = @job[:id]
-        @result.save
+        update_result(@configuration, @result, location,organization_name,brief_description,job_requirements,additional_details,how_to_apply,link)
+
 
         parsed_count +=1
         log "parsed #{job_name}"
@@ -77,8 +68,8 @@ class BTNSearch < ATSWorker
         save_data_page job_name, plain_data_to_be_saved.to_html, link.to_s, @result
         #break
       end
-      #@data = to_csv
-      #save_data
+      @data = to_csv
+      save_data if @configuration.create_csv
       log "saved #{parsed_count} items in total"
       next_link = results.parser.css 'span#JobSearchTable table tr td table.x1i tr td table tr td a.x41'
       break if next_link.nil? || (pagenum > 1 && next_link.length < 2)
@@ -95,20 +86,9 @@ class BTNSearch < ATSWorker
       pagenum +=1
     end
 
-    @configuration.time_of_last_run = @time_of_last_run
-    @configuration.no_of_times_run = @configuration.no_of_times_run.to_i + 1
-    @configuration.time_of_last_run = Time.now - @configuration.time_of_last_run
-    @configuration.end_time = Time.now
-    if @configuration.first_time.blank?
-      @configuration.first_time =  1
-    else
-      @configuration.first_time =  2
-    end
-
-    @configuration.save
-
+    update_configuration(@configuration)
 
     log "Done!"
-    #return to_csv
+    return to_csv
   end
 end

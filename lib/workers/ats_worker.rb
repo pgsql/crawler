@@ -11,7 +11,6 @@ class ATSWorker < CSVMaker
     data.gsub! /<img[^<]*>/, ""
     data = "<html>\n<body>\n<a href=\"#{link}\">#{file_name}</a>\n"+data+"\n</body>\n</html>"
     log "saving page to DB: "+File.expand_path(path)+"\n--------------\n"
-    Result.create(:job_name => file_name, :html_blob => data, :link => link)
     File.makedirs(dirs)
     f = File.new path, "w"
     cnt = f.write data
@@ -60,6 +59,38 @@ class ATSWorker < CSVMaker
     dbg = data.gsub! /(\s?\n\s?){2,}/, "\n"
     dbg = data.strip!
     return data
+  end
+
+  def update_last_run(config_id)
+    @configuration = Configuration.find(config_id)
+    @time_of_last_run  =  Time.now
+  end
+
+  def update_result(config,result,location,organization_name,brief_description,job_requirements,additional_details,how_to_apply,link)
+    result.location = location if config.location
+    result.expired = false
+    result.organination_name = organization_name if config.organization_name
+    result.brieff_description = brief_description if config.brieff_description
+    result.job_requirments = job_requirements if config.job_requirments
+    result.additional_details = additional_details if config.additional_details
+    result.how_to_apply = how_to_apply if config.how_to_apply
+    result.link = link.to_s if config.link
+    result.configuration_id = config.id
+    result.save
+  end
+
+  def update_configuration(config)
+    config.time_of_last_run = @time_of_last_run
+    config.no_of_times_run = config.no_of_times_run.to_i + 1
+    config.time_of_last_run = Time.now - config.time_of_last_run
+    config.end_time = Time.now
+    if config.first_time.blank?
+      config.first_time =  1
+    else
+      config.first_time =  2
+    end
+
+    config.save
   end
 
   #add fields from "onclick" event to form

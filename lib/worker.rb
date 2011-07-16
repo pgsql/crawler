@@ -15,6 +15,19 @@ class Worker
     @job = job
     @agent = Mechanize.new
     @agent.history.max_size=3
+    @fields = [
+         "Job Name",
+         "Working Title",
+         "Location",
+         "Organization Name",
+         "Department Description",
+         "Brief Description",
+         "Detailed Description",
+         "Job Requirements",
+         "Additional Details",
+         "How To Apply",
+         "Link"
+     ]
 
     @agent.open_timeout = 100000 #sometimes even this huge timeout is not enough...
     
@@ -100,15 +113,15 @@ class Worker
     path = @job[:save_path]
     log "--------------\nsaving to: "+File.expand_path(path)+"\n\n"
     dirs = File.dirname(path)
-#    puts "*************** path.inspect ****************"
-#    puts path.inspect
-#    puts "*************** @data.inspect ****************"
-#    puts @data.inspect
+    puts "*************** path.inspect ****************"
+    puts path.inspect
+    puts "*************** @data.inspect ****************"
+    puts @data.inspect
     #make absent dirs in the path
-#    File.makedirs(dirs)
-#    f = File.new path, "w"
-#    f.write @data
-#    f.close
+    File.makedirs(dirs)
+    f = File.new path, "w"
+    f.write @data
+    f.close
   end
 
   #output to terminal screen
