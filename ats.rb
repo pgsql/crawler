@@ -230,7 +230,7 @@ end
 
 if Configuration.activated.count > 0
   #go through all the jobs and launch each of them
-  Configuration.activivated.each do |job|
+  Configuration.activated.each do |job|
     begin
       worker_class = Module.const_get(job.worker.to_s)
       puts job
