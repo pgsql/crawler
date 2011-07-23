@@ -228,17 +228,21 @@ Dir[File.expand_path(File.dirname(__FILE__)+"/lib/workers/*.rb")].each do |file|
   require file
 end
 
-#go through all the jobs and launch each of them
-Configuration.activivated.each do |job|
-  begin
-    worker_class = Module.const_get(job.worker.to_s)
-    puts job
-    worker = worker_class.new job
+if Configuration.activated.count > 0
+  #go through all the jobs and launch each of them
+  Configuration.activivated.each do |job|
+    begin
+      worker_class = Module.const_get(job.worker.to_s)
+      puts job
+      worker = worker_class.new job
 
-    worker.run
-  rescue Exception => e
-      puts "Unable to start parser: #{e.message}"
+      worker.run
+    rescue Exception => e
+        puts "Unable to start parser: #{e.message}"
+    end
   end
+else
+  puts "You don't have any activated configurations. Please add your configurations"
 end
 #jobs.each do |job|
 #  if job[:active]
